@@ -1,5 +1,9 @@
 ## Since Stopped
 
+View this data field [here](https://apps.garmin.com/apps/f1cbfe29-f1a0-40c8-a16a-aff5236a6bfa) on the Garmin Connect IQ app store.
+
+Motivation for ultra-cycling, this data field shows the hours:minutes you have been moving since you last stopped. The field resets to 00:00 if you are stationary for 5 minutes.
+
 #### Garmin Docs
 
 [Build my first app](https://developer.garmin.com/connect-iq/connect-iq-basics/your-first-app/)
