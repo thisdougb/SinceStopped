@@ -4,19 +4,22 @@ View this data field [here](https://apps.garmin.com/apps/f1cbfe29-f1a0-40c8-a16a
 
 Motivation for ultra-cycling, this data field shows the hours:minutes you have been moving since you last stopped. The field resets to 00:00 if you are stationary for 5 minutes.
 
-#### Garmin Docs
+## Info
+
+
+### Garmin Docs
 
 [Build my first app](https://developer.garmin.com/connect-iq/connect-iq-basics/your-first-app/)
 
-#### My Developer ID
+[API Device Reference](https://developer.garmin.com/connect-iq/reference-guides/devices-reference/#edge®840840solar)
+
+### My Developer ID
 
 https://apps.garmin.com/developer/cc7db9c9-7700-4ee2-a83a-74925bf4aad6/apps
 
-### Device Reference
+### VSCode Setup
 
-This gives the dimensions of field layouts. Useful for troubleshooting.
-
-https://developer.garmin.com/connect-iq/reference-guides/devices-reference/#edge®840840solar
+Garmin data fields are written in Monkey C, and VSCode is the supported IDE.
 
 #### SDK
 
