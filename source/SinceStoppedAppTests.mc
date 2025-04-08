@@ -26,7 +26,7 @@ function testAlwaysStationaryTimerOn(logger as Logger) as Boolean {
   // create test activity object we can pass into the compute() proxy function
   var testActivity = Activity.getActivityInfo();
   testActivity.currentSpeed = 0.0;
-  testActivity.timerState = 3;
+  testActivity.timerState = Activity.TIMER_STATE_ON;
   
   // the base time for the test
   var testTime = Time.now();
@@ -62,7 +62,7 @@ function testAlwaysMovingTimerOn(logger as Logger) as Boolean {
   var testView = new SinceStoppedView();
   var testActivity = Activity.getActivityInfo();
   testActivity.currentSpeed = 0.5;
-  testActivity.timerState = 3;
+  testActivity.timerState = Activity.TIMER_STATE_ON;
   
   var testTime = Time.now();
   var secondDuration = new Time.Duration(1);
@@ -96,7 +96,7 @@ function testMoveStopTimerOn(logger as Logger) as Boolean {
   var testView = new SinceStoppedView();
   var testActivity = Activity.getActivityInfo();
   testActivity.currentSpeed = 0.5;
-  testActivity.timerState = 3;
+  testActivity.timerState = Activity.TIMER_STATE_ON;
   
   var testTime = Time.now();
   var secondDuration = new Time.Duration(1);
@@ -137,7 +137,7 @@ function testMoveStopJitterTimerOn(logger as Logger) as Boolean {
   var testView = new SinceStoppedView();
   var testActivity = Activity.getActivityInfo();
   testActivity.currentSpeed = 0.5;
-  testActivity.timerState = 3;
+  testActivity.timerState = Activity.TIMER_STATE_ON;
   
   var testTime = Time.now();
   var secondDuration = new Time.Duration(1);
@@ -192,7 +192,7 @@ function testMoveStopMoveTimerOn(logger as Logger) as Boolean {
   var testView = new SinceStoppedView();
   var testActivity = Activity.getActivityInfo();
   testActivity.currentSpeed = 0.5;
-  testActivity.timerState = 3;
+  testActivity.timerState = Activity.TIMER_STATE_ON;
   
   var testTime = Time.now();
   var secondDuration = new Time.Duration(1);
@@ -246,7 +246,7 @@ function testMoveStopTimerPause(logger as Logger) as Boolean {
   var testView = new SinceStoppedView();
   var testActivity = Activity.getActivityInfo();
   testActivity.currentSpeed = 0.5;
-  testActivity.timerState = 3;
+  testActivity.timerState = Activity.TIMER_STATE_ON;
   
   var testTime = Time.now();
   var secondDuration = new Time.Duration(1);
@@ -265,7 +265,7 @@ function testMoveStopTimerPause(logger as Logger) as Boolean {
   }
 
   // Pause and stop for five minutes then check display text
-  testActivity.timerState = 2;
+  testActivity.timerState = Activity.TIMER_STATE_PAUSED;
   testActivity.currentSpeed = 0.0;
   for (var i = 0; i <= 300; i++) {
     response = testView.getDisplayText(testActivity, testTime);
@@ -301,7 +301,7 @@ function testTimerOffOnMove(logger as Logger) as Boolean {
   var testView = new SinceStoppedView();
   var testActivity = Activity.getActivityInfo();
   testActivity.currentSpeed = 0.5;
-  testActivity.timerState = 0;
+  testActivity.timerState = Activity.TIMER_STATE_OFF;
   
   var testTime = Time.now();
   var secondDuration = new Time.Duration(1);
@@ -320,7 +320,7 @@ function testTimerOffOnMove(logger as Logger) as Boolean {
   }
 
   // Timer on and do 2 mins of speed readings, counter should show 2 mins not 7 mins
-  testActivity.timerState = 3;
+  testActivity.timerState = Activity.TIMER_STATE_ON;
   testActivity.currentSpeed = 0.5;
   for (var i = 0; i < 120; i++) {
     response = testView.getDisplayText(testActivity, testTime);

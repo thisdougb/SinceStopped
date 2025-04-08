@@ -40,7 +40,7 @@ class SinceStoppedView extends WatchUi.SimpleDataField {
 
         // timer is off, so re-init moving start time, but return not-started text.
         // I'm not 100% sure when the data field is initialised, so this may be redundant.
-        if (info.timerState == 0) {
+        if (info.timerState == Activity.TIMER_STATE_OFF) {
             self._currentMovingStartedTime = timeNow;
             return "00:00";
         }
@@ -71,7 +71,7 @@ class SinceStoppedView extends WatchUi.SimpleDataField {
         
         // if there speed, no jitter, and timer is active, then we are moving.
         // this means we do not update _lastMovingTime if device timer paused/stopped.
-        if (currentSpeed > 0 && self._jitterDetector == 0 && info.timerState == 3) {
+        if (currentSpeed > 0 && self._jitterDetector == 0 && info.timerState == Activity.TIMER_STATE_ON) {
             // update _lastMovingTime if we are currently moving.
             //System.println("compute(): currently moving at speed " + info.currentSpeed);
 			self._lastMovingTime = timeNow;
