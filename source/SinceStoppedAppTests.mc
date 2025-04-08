@@ -1,3 +1,15 @@
+/*
+Tests: Command + Shift + P , Monkey C: Run Tests
+
+Comment out the entire file when building a release. It seems to result in a smaller binary file,
+even though the compiler is meant to exclude tests by default.
+
+I commented the first test as documentation for anyone trying to figure out how to unit test. The
+rest of the comments are for me, to remember what I'm testing in the data field.
+
+In the app code I've used the proxy function getDisplayText() to be able to run tests, as it's 
+simpler than wrestling with compute().
+*/
 
 import Toybox.Test;
 import Toybox.Lang;
@@ -6,25 +18,26 @@ import Toybox.Time;
 
 // Tests that remaining stationary does not increment the display text.
 (:test)
-function testAlwaysStationary(logger as Logger) as Boolean {
+function testAlwaysStationaryTimerOn(logger as Logger) as Boolean {
   
-    // create a test class object to access the compute() method
+    // create a test class object to access the compute() proxy method
   var testView = new SinceStoppedView();
 
-  // create test activity object we can pass into compute()
+  // create test activity object we can pass into the compute() proxy function
   var testActivity = Activity.getActivityInfo();
   testActivity.currentSpeed = 0.0;
+  testActivity.timerState = 3;
   
   // the base time for the test
   var testTime = Time.now();
   var secondDuration = new Time.Duration(1);
   var response = "";
 
-  // 1 min of stationary
+  // play 1 min of activity with no speed
   for (var i = 0; i < 60; i++) {
 
     response = testView.getDisplayText(testActivity, testTime);
-    testTime = testTime.add(secondDuration);
+    testTime = testTime.add(secondDuration); // incremement the time value
 
     if (!response.equals("00:00")) {
         logger.debug("inner loop response was [" + response + "]");
@@ -32,23 +45,24 @@ function testAlwaysStationary(logger as Logger) as Boolean {
     }
   }
   
+  // if we didn't move the response should be 00:00
   response = testView.getDisplayText(testActivity, testTime);
-  
   if (response.equals("00:00")) {
     return true;
   }
 
   logger.debug("response was [" + response + "]");
-  return (false); // returning true indicates pass, false indicates failure
+  return (false);
 }
 
 // Tests that continuous moving increments the display text.
 (:test)
-function testAlwaysMoving(logger as Logger) as Boolean {
+function testAlwaysMovingTimerOn(logger as Logger) as Boolean {
   
   var testView = new SinceStoppedView();
   var testActivity = Activity.getActivityInfo();
   testActivity.currentSpeed = 0.5;
+  testActivity.timerState = 3;
   
   var testTime = Time.now();
   var secondDuration = new Time.Duration(1);
@@ -72,16 +86,17 @@ function testAlwaysMoving(logger as Logger) as Boolean {
   }
 
   logger.debug("response was [" + response + "]");
-  return (false); // returning true indicates pass, false indicates failure
+  return (false);
 }
 
 // Tests that moving then stopping for 301 seconds resets display counter.
 (:test)
-function testMoveStop(logger as Logger) as Boolean {
+function testMoveStopTimerOn(logger as Logger) as Boolean {
   
   var testView = new SinceStoppedView();
   var testActivity = Activity.getActivityInfo();
   testActivity.currentSpeed = 0.5;
+  testActivity.timerState = 3;
   
   var testTime = Time.now();
   var secondDuration = new Time.Duration(1);
@@ -112,16 +127,17 @@ function testMoveStop(logger as Logger) as Boolean {
   }
 
   logger.debug("response was [" + response + "]");
-  return (false); // returning true indicates pass, false indicates failure
+  return (false);
 }
 
 // Tests that moving, stopping for 301 seconds, then jittering for 59 seconds shows 00:00.
 (:test)
-function testMoveStopJitter(logger as Logger) as Boolean {
+function testMoveStopJitterTimerOn(logger as Logger) as Boolean {
   
   var testView = new SinceStoppedView();
   var testActivity = Activity.getActivityInfo();
   testActivity.currentSpeed = 0.5;
+  testActivity.timerState = 3;
   
   var testTime = Time.now();
   var secondDuration = new Time.Duration(1);
@@ -152,9 +168,10 @@ function testMoveStopJitter(logger as Logger) as Boolean {
     return false;
   }
 
-  // Jitter just below threshold of 60.
+  // Jitter just below threshold
+  var jitterThreshold = 20;
   testActivity.currentSpeed = 0.3;
-  for (var i = 0; i < 60; i++) {
+  for (var i = 0; i < jitterThreshold; i++) {
     response = testView.getDisplayText(testActivity, testTime);
     testTime = testTime.add(secondDuration);
   }
@@ -165,16 +182,17 @@ function testMoveStopJitter(logger as Logger) as Boolean {
   }
 
   logger.debug("response was [" + response + "]");
-  return (false); // returning true indicates pass, false indicates failure
+  return (false);
 }
 
 // Tests that moving, stopping for 301 seconds, then moving for 1 min shows 00:01.
 (:test)
-function testMoveStopMove(logger as Logger) as Boolean {
+function testMoveStopMoveTimerOn(logger as Logger) as Boolean {
   
   var testView = new SinceStoppedView();
   var testActivity = Activity.getActivityInfo();
   testActivity.currentSpeed = 0.5;
+  testActivity.timerState = 3;
   
   var testTime = Time.now();
   var secondDuration = new Time.Duration(1);
@@ -219,4 +237,101 @@ function testMoveStopMove(logger as Logger) as Boolean {
 
   logger.debug("response was [" + response + "]");
   return (false); // returning true indicates pass, false indicates failure
+}
+
+// Tests that moving, stopping and pausing the timer doesn't cause new readings.
+(:test)
+function testMoveStopTimerPause(logger as Logger) as Boolean {
+  
+  var testView = new SinceStoppedView();
+  var testActivity = Activity.getActivityInfo();
+  testActivity.currentSpeed = 0.5;
+  testActivity.timerState = 3;
+  
+  var testTime = Time.now();
+  var secondDuration = new Time.Duration(1);
+  var response = "";
+
+  // Move for two minutes then check display text
+  for (var i = 0; i < 120; i++) {
+    response = testView.getDisplayText(testActivity, testTime);
+    testTime = testTime.add(secondDuration);
+  }
+
+  response = testView.getDisplayText(testActivity, testTime);
+  if (!response.equals("00:02")) {
+    logger.debug("after 2 mins moving response was [" + response + "]");
+    return false;
+  }
+
+  // Pause and stop for five minutes then check display text
+  testActivity.timerState = 2;
+  testActivity.currentSpeed = 0.0;
+  for (var i = 0; i <= 300; i++) {
+    response = testView.getDisplayText(testActivity, testTime);
+    testTime = testTime.add(secondDuration);
+  }
+  
+  response = testView.getDisplayText(testActivity, testTime);
+  if (!response.equals("00:00")) {
+    logger.debug("after 5 mins moving response was [" + response + "]");
+    return false;
+  }
+
+  // Move again for 2 min while paused
+  testActivity.currentSpeed = 0.3;
+  for (var i = 0; i < 180; i++) {
+    response = testView.getDisplayText(testActivity, testTime);
+    testTime = testTime.add(secondDuration);
+  }
+  
+  response = testView.getDisplayText(testActivity, testTime);
+  if (response.equals("00:00")) {
+    return true;
+  }
+
+  logger.debug("response was [" + response + "]");
+  return (false);
+}
+
+// Tests that the counter doesn't start reading until we have started the timer
+(:test)
+function testTimerOffOnMove(logger as Logger) as Boolean {
+  
+  var testView = new SinceStoppedView();
+  var testActivity = Activity.getActivityInfo();
+  testActivity.currentSpeed = 0.5;
+  testActivity.timerState = 0;
+  
+  var testTime = Time.now();
+  var secondDuration = new Time.Duration(1);
+  var response = "";
+
+  // Generate 5 mins of speed readings
+  for (var i = 0; i < 300; i++) {
+    response = testView.getDisplayText(testActivity, testTime);
+    testTime = testTime.add(secondDuration);
+  }
+
+  response = testView.getDisplayText(testActivity, testTime);
+  if (!response.equals("00:00")) {
+    logger.debug("after 5 mins moving response was [" + response + "]");
+    return false;
+  }
+
+  // Timer on and do 2 mins of speed readings, counter should show 2 mins not 7 mins
+  testActivity.timerState = 3;
+  testActivity.currentSpeed = 0.5;
+  for (var i = 0; i < 120; i++) {
+    response = testView.getDisplayText(testActivity, testTime);
+    testTime = testTime.add(secondDuration);
+  }
+  
+  response = testView.getDisplayText(testActivity, testTime);
+  if (response.equals("00:02")) {
+    return true;
+  }
+
+  logger.debug("response was [" + response + "]");
+  return (false);
 }
