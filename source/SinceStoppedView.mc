@@ -38,10 +38,10 @@ class SinceStoppedView extends WatchUi.SimpleDataField {
 
     function getDisplayText(info as Activity.Info, timeNow as Time.Moment) as String {
 
-        // timer is off, so re-init moving start time, but return not-started text.
-        // I'm not 100% sure when the data field is initialised, so this may be redundant.
+        // timer is off so we are not in an activity, therefore re-init moving start time.
         if (info.timerState == Activity.TIMER_STATE_OFF) {
-            self._currentMovingStartedTime = timeNow;
+            self._currentMovingStartedTime = Time.now();
+            self._lastMovingTime = self._currentMovingStartedTime;
             return "00:00";
         }
 
@@ -76,7 +76,7 @@ class SinceStoppedView extends WatchUi.SimpleDataField {
             //System.println("compute(): currently moving at speed " + info.currentSpeed);
 			self._lastMovingTime = timeNow;
 		} else {
-            // we are not moving or device timer is paused
+            // we are not moving or device timer is paused or experiencing jitter
             var durationSinceLastMovement = timeNow.subtract(self._lastMovingTime).value();
             //System.println("compute(): currently stopped for " + durationSinceLastMovement);
 

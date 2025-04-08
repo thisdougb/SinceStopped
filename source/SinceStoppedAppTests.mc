@@ -15,6 +15,7 @@ import Toybox.Test;
 import Toybox.Lang;
 import Toybox.Activity;
 import Toybox.Time;
+import Toybox.System;
 
 // Tests that remaining stationary does not increment the display text.
 (:test)
@@ -329,6 +330,55 @@ function testTimerOffOnMove(logger as Logger) as Boolean {
   
   response = testView.getDisplayText(testActivity, testTime);
   if (response.equals("00:02")) {
+    return true;
+  }
+
+  logger.debug("response was [" + response + "]");
+  return (false);
+}
+
+// Tests that the app doesn't crash if paused while threshold is reached
+(:test)
+function testMovePauseOverThreshold(logger as Logger) as Boolean {
+  
+  var testView = new SinceStoppedView();
+  var testActivity = Activity.getActivityInfo();
+    
+  var testTime = Time.now();
+  var secondDuration = new Time.Duration(1);
+  var response = "";
+
+  // Generate 5 mins of speed readings
+  testActivity.currentSpeed = 0.5;
+  testActivity.timerState = Activity.TIMER_STATE_ON;
+  for (var i = 0; i < 300; i++) {
+    response = testView.getDisplayText(testActivity, testTime);
+    testTime = testTime.add(secondDuration);
+  }
+
+  response = testView.getDisplayText(testActivity, testTime);
+  if (!response.equals("00:05")) {
+    logger.debug("after 5 mins moving response was [" + response + "]");
+    return false;
+  }
+  
+  testActivity.timerState = Activity.TIMER_STATE_OFF;
+  testActivity.currentSpeed = 0.3;
+  testTime = testTime.add(secondDuration);
+  testTime = testTime.add(secondDuration);
+  response = testView.getDisplayText(testActivity, testTime);
+  System.println("response " + response);
+
+  // Timer paused and do 5 mins of no-speed readings
+  testActivity.timerState = Activity.TIMER_STATE_PAUSED;
+  testActivity.currentSpeed = 0.0;
+  for (var i = 0; i < 301; i++) {
+    response = testView.getDisplayText(testActivity, testTime);
+    testTime = testTime.add(secondDuration);
+  }
+  
+  response = testView.getDisplayText(testActivity, testTime);
+  if (response.equals("00:00")) {
     return true;
   }
 
