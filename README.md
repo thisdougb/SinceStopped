@@ -93,4 +93,4 @@ total 520
 
 [Developer Dashboard](https://apps.garmin.com/en-US/apps/f1cbfe29-f1a0-40c8-a16a-aff5236a6bfa)
 
-Uploads the .iq file, and allos (in the UI) to set the app version number.
+Uploads the .iq file, and allows (in the UI) to set the app version number.
