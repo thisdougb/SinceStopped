@@ -295,7 +295,7 @@ function testMoveStopTimerPause(logger as Logger) as Boolean {
   return (false);
 }
 
-// Tests that the counter doesn't start reading until we have started the timer
+// Tests that the counter doesn't start reading until we have started the device timer
 (:test)
 function testTimerOffOnMove(logger as Logger) as Boolean {
   
@@ -308,7 +308,7 @@ function testTimerOffOnMove(logger as Logger) as Boolean {
   var secondDuration = new Time.Duration(1);
   var response = "";
 
-  // Generate 5 mins of speed readings
+  // Generate 5 mins of speed readings, with timer off
   for (var i = 0; i < 300; i++) {
     response = testView.getDisplayText(testActivity, testTime);
     testTime = testTime.add(secondDuration);
@@ -319,7 +319,7 @@ function testTimerOffOnMove(logger as Logger) as Boolean {
     logger.debug("after 5 mins moving response was [" + response + "]");
     return false;
   }
-
+  
   // Timer on and do 2 mins of speed readings, counter should show 2 mins not 7 mins
   testActivity.timerState = Activity.TIMER_STATE_ON;
   testActivity.currentSpeed = 0.5;
