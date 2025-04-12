@@ -36,17 +36,15 @@ $ curl https://developer.garmin.com/downloads/connect-iq/sdk-manager/connectiq-s
 Then open the .dmg and install, and select to set it as the current SDK.
 
 ```
-$ pwd
-/Users/dougb/Library/Application Support/Garmin/ConnectIQ/Sdks
-$ ls -l
-total 0
-drwxr-xr-x   6 dougb  staff  192  3 Apr  2021 connectiq-sdk-mac-3.1.8-2020-05-01-5a72d0ab2
-drwxr-xr-x   6 dougb  staff  192  3 Apr  2021 connectiq-sdk-mac-3.1.9-2020-06-24-1cc9d3a70
-drwxr-xr-x   6 dougb  staff  192  3 Apr  2021 connectiq-sdk-mac-3.2.1-2020-08-20-56ff593b7
-drwxr-xr-x   6 dougb  staff  192  3 Apr  2021 connectiq-sdk-mac-3.2.2-2020-08-28-a50584d55
-drwxr-xr-x   6 dougb  staff  192  3 Apr  2021 connectiq-sdk-mac-3.2.3-2020-10-13-c14e609bd
-drwxr-xr-x  13 dougb  staff  416  3 Aug  2022 connectiq-sdk-mac-4.1.4-2022-06-07-f86da2dee
-drwxr-xr-x@ 13 dougb  staff  416 12 Apr 09:26 connectiq-sdk-mac-4.2.4-2023-04-05-5830cc591
+$ ls -1 /Users/dougb/Library/Application\ Support/Garmin/ConnectIQ/Sdks
+connectiq-sdk-mac-3.1.8-2020-05-01-5a72d0ab2
+connectiq-sdk-mac-3.1.9-2020-06-24-1cc9d3a70
+connectiq-sdk-mac-3.2.1-2020-08-20-56ff593b7
+connectiq-sdk-mac-3.2.2-2020-08-28-a50584d55
+connectiq-sdk-mac-3.2.3-2020-10-13-c14e609bd
+connectiq-sdk-mac-4.1.4-2022-06-07-f86da2dee
+connectiq-sdk-mac-4.2.4-2023-04-05-5830cc591
+connectiq-sdk-mac-8.1.1-2025-03-27-66dae750f
 ```
 
 Next go to the Devices tab, and ensure new devices are downloaded.
