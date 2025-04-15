@@ -55,14 +55,14 @@ class SinceStoppedView extends WatchUi.SimpleDataField {
 
         var currentSpeed = info.currentSpeed as Lang.Float;
         
-        // if we are moving and not paused then decremment the jitter count        
+        // if we are moving then decremment the jitter count        
         if (currentSpeed > 0) {
             if (self._jitterDetector > 0) {
                 self._jitterDetector--;
                 //System.println("jitter decremented to " + self._jitterDetector + "  speed " +info.currentSpeed);
             }
         } else {
-            // we are not moving so incremement the jitter count up to max 10
+            // we are not moving so incremement the jitter count
             if (self._jitterDetector < self._jitterThreshold) {
                 self._jitterDetector++;
                 //System.println("jitter incremented to " + self._jitterDetector);
